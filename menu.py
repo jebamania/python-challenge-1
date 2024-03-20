@@ -52,7 +52,7 @@ menu = {
 
 # 1. Set up order list. Order list will store a list of dictionaries for
 # menu item name, item price, and quantity ordered
-
+customer_order = []
 
 # Launch the store and present a greeting to the customer
 print("Welcome to the variety food truck.")
@@ -118,31 +118,40 @@ while place_order:
                     }
                     i += 1
             # 2. Ask customer to input menu item number
-
+            menu_selection = input('Please enter the item number from the menu. ')
 
             # 3. Check if the customer typed a number
-
+            if (type(menu_selection) is str and menu_selection.isdigit()) or menu_selection is int:
                 # Convert the menu selection to an integer
-
+                menu_selection = int(menu_selection)
 
                 # 4. Check if the menu selection is in the menu items
+                if menu_selection in menu_items.keys():
 
                     # Store the item name as a variable
-
+                    menu_item = menu_items.get(menu_selection)
 
                     # Ask the customer for the quantity of the menu item
-
+                    quantity = input(f'For you selection, {menu_item["Item name"]}, how many do you want?/n/nNote: If your quantity is invalid, it will default to 1. ')
 
                     # Check if the quantity is a number, default to 1 if not
-
+                    if (type(quantity) is str and quantity.isdigit()) or quantity is int:
+                        quantity = int(quantity)
+                    else: quantity = 1
 
                     # Add the item name, price, and quantity to the order list
+                    customer_order.append({
+                        "Item name": menu_selection,
+                        "Price": menu_item["Price"],
+                        "Quantity": quantity
+                    })
 
+                # Tell the customer that their input isn't valid
 
-                    # Tell the customer that their input isn't valid
+                else: print(f'"{menu_selection}" is not a valid menu option as it can\'t be found in the menu.')
 
-
-                # Tell the customer they didn't select a menu option
+            # Tell the customer they didn't select a menu option
+            else: print(f"Your menu selection, {menu_selection} is not a valid item number on our menu.")
 
         else:
             # Tell the customer they didn't select a menu option
