@@ -165,20 +165,26 @@ while place_order:
         keep_ordering = input("Would you like to keep ordering? (Y)es or (N)o ")
 
         # 5. Check the customer's input
-
+        # TODO write a match:case statement that check for y/n (upper or lowercase) and has a default option if neither letter is inserted
+        match keep_ordering.lower():
+            case "y", "yes":
                 # Keep ordering
-
+                place_order = True
                 # Exit the keep ordering question loop
+                break
 
+            case "n", "no":
                 # Complete the order
-
                 # Since the customer decided to stop ordering, thank them for
                 # their order
-
+                place_order = False
+                print('Thank you for ordering through our CLI! We appreciate your patience while we update our UI systems that you are more familiar with!')
                 # Exit the keep ordering question loop
-
-
+                break
+            
+            case _:
                 # Tell the customer to try again
+                print(f'Good try, but please try again. Input "{keep_ordering}" does not compute.')
 
 
 # Print out the customer's order
