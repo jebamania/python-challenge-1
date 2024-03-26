@@ -221,7 +221,9 @@ for order_item in customer_order:
     else:
         item_name = item_name_full
 
-    item_price = str(order_item['Price'])
+    item_price = '{:,.2f}'.format(order_item['Price'])
+
+    item_by_quantity_print = '{:,.2f}'.format(cost_per_item[order_index])
     
     if len(str(order_item['Price'])) > len(str(price_dashes)):
         order_item['Price'] = f"{ order_item['Price'][0:len(str(price_dashes))] }"
@@ -231,13 +233,11 @@ for order_item in customer_order:
 
     item_name_print = f"{item_name + ('-'* (len(str(item_name_dashes))-len(item_name)) )}"
     #subtracting the 1 extra here for the $
-    item_price_print = f"${str(float(order_item['Price'])) + ('-'* (len(str(price_dashes))-len(item_price) -1) )}"
+    item_price_print = f"${item_price + ('-'* (len(str(price_dashes))-len(item_price) -1) )}"
     item_quantity_print = f"{str(order_item['Quantity']) + ('-'* (len(str(quantity_dashes))-len(str(order_item['Quantity']))) )}"
-    
-    item_by_quantity_print = f"${cost_per_item[order_index]}"
 
     # 10. Print the item name, price, and quantity
-    print( item_name_print + '|' + item_price_print + '|' + item_quantity_print + '|' + item_by_quantity_print )
+    print( item_name_print + '|' + item_price_print + '|' + item_quantity_print + '|$' + item_by_quantity_print )
     order_index = order_index + 1
 
 
@@ -246,6 +246,7 @@ for order_item in customer_order:
 # and print the prices.
 total_cost = 0
 [total_cost := total_cost + (item['Price'] * item['Quantity']) for item in customer_order]
+total_cost = '{:,.2f}'.format(total_cost)
 
 print( item_name_dashes + price_dashes + quantity_dashes + ('-'*10) )
-print(f'Total: ${total_cost:}')
+print(f'Total: ${total_cost}')
