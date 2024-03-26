@@ -106,7 +106,7 @@ while place_order:
                         print(f"{i}      | {key} - {key2}{item_spaces} | ${value2:.2f}")
                         menu_items[i] = {
                             "Item key": i,
-                            "Item name": key2,
+                            "Item name": f'{key} - {key2}',
                             "Item category": key,
                             "Price": value2
                         }
@@ -137,7 +137,7 @@ while place_order:
                     menu_item = menu_items.get(menu_selection)
 
                     # Ask the customer for the quantity of the menu item
-                    quantity = input(f'For you selection, {menu_item["Item name"]}, how many do you want?\n\nNote: If your quantity is invalid, it will default to 1. ')
+                    quantity = input(f'For your selection, {menu_item["Item name"]}, how many do you want?\n\nNote: If your quantity is invalid, it will default to 1. ')
 
                     # Check if the quantity is a number, default to 1 if not
                     if (type(quantity) is str and quantity.isdigit()) or quantity is int:
@@ -171,7 +171,7 @@ while place_order:
         keep_ordering = input("Would you like to keep ordering? (Y)es or (N)o ")
 
         # 5. Check the customer's input
-        match keep_ordering:
+        match keep_ordering.lower():
             case "y" | "yes":
                 # Keep ordering
                 place_order = True
