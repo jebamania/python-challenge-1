@@ -33,7 +33,7 @@ menu = {
             "Irish breakfast": 2.49
         },
         "Coffee": {
-            "Espresso": 2.99,
+            "Espresso": 2.9,
             "Flat white": 2.99,
             "Iced": 3.49
         }
@@ -92,6 +92,7 @@ while place_order:
 
             # Print out the menu options from the menu_category_name
             print(f"What {menu_category_name} item would you like to order?")
+
             i = 1
             menu_items = {}
             print("Item # | Item name                | Price")
@@ -102,18 +103,22 @@ while place_order:
                     for key2, value2 in value.items():
                         num_item_spaces = 24 - len(key + key2) - 3
                         item_spaces = " " * num_item_spaces
-                        print(f"{i}      | {key} - {key2}{item_spaces} | ${value2}")
+                        print(f"{i}      | {key} - {key2}{item_spaces} | ${value2:.2f}")
                         menu_items[i] = {
-                            "Item name": key + " - " + key2,
+                            "Item key": i,
+                            "Item name": key2,
+                            "Item category": key,
                             "Price": value2
                         }
-                        i += 1
+                        i = i + 1
                 else:
                     num_item_spaces = 24 - len(key)
                     item_spaces = " " * num_item_spaces
-                    print(f"{i}      | {key}{item_spaces} | ${value}")
+                    print(f"{i}      | {key}{item_spaces} | ${value:.2f}")
                     menu_items[i] = {
+                        "Item key": i,
                         "Item name": key,
+                        "Item category": menu_category_name,
                         "Price": value
                     }
                     i += 1
@@ -132,7 +137,7 @@ while place_order:
                     menu_item = menu_items.get(menu_selection)
 
                     # Ask the customer for the quantity of the menu item
-                    quantity = input(f'For you selection, {menu_item["Item name"]}, how many do you want?/n/nNote: If your quantity is invalid, it will default to 1. ')
+                    quantity = input(f'For you selection, {menu_item["Item name"]}, how many do you want?\n\nNote: If your quantity is invalid, it will default to 1. ')
 
                     # Check if the quantity is a number, default to 1 if not
                     if (type(quantity) is str and quantity.isdigit()) or quantity is int:
@@ -141,7 +146,8 @@ while place_order:
 
                     # Add the item name, price, and quantity to the order list
                     customer_order.append({
-                        "Item name": menu_selection,
+                        "Item key": menu_selection,
+                        "Item name": menu_item["Item name"],
                         "Price": menu_item["Price"],
                         "Quantity": quantity
                     })
@@ -165,50 +171,81 @@ while place_order:
         keep_ordering = input("Would you like to keep ordering? (Y)es or (N)o ")
 
         # 5. Check the customer's input
-        match keep_ordering.lower():
-            case "y", "yes":
+        match keep_ordering:
+            case "y" | "yes":
                 # Keep ordering
                 place_order = True
                 # Exit the keep ordering question loop
                 break
 
-            case "n", "no":
+            case "n" | "no":
                 # Complete the order
                 # Since the customer decided to stop ordering, thank them for
                 # their order
                 place_order = False
-                print('Thank you for ordering through our CLI! We appreciate your patience while we update our UI systems that you are more familiar with!')
+                print('Thank you for ordering through our CLI! We appreciate your patience while we update our UI systems!')
                 # Exit the keep ordering question loop
                 break
 
             case _:
                 # Tell the customer to try again
-                print(f'Good try, but please try again. Input "{keep_ordering}" does not compute.')
+                print(f'Good try, but please try again. Input "{keep_ordering}" does not compute. ')
 
 
 # Print out the customer's order
 print("This is what we are preparing for you.\n")
 
 # Uncomment the following line to check the structure of the order
-#print(order)
+#print(customer_order)
 
-print("Item name                 | Price  | Quantity")
-print("--------------------------|--------|----------")
+print("Item name                 | Price  | Quantity | Total")
+print("--------------------------|--------|----------|------")
+item_name_dashes = '--------------------------'
+price_dashes = '--------'
+quantity_dashes = '----------'
+
+cost_per_item = [item['Price'] * item['Quantity'] for item in customer_order]
 
 # 6. Loop through the items in the customer's order
-
+order_index = 0
+for order_item in customer_order:
     # 7. Store the dictionary items as variables
-
-
     # 8. Calculate the number of spaces for formatted printing
-
-
     # 9. Create space strings
 
+    item_name_full = order_item['Item name']
+    item_name = ''
+
+    if len(item_name_full) > len(str(item_name_dashes)):
+        item_name = f"{ item_name_full[0:len(str(item_name_dashes))] }"
+    else:
+        item_name = item_name_full
+
+    item_price = str(order_item['Price'])
+    
+    if len(str(order_item['Price'])) > len(str(price_dashes)):
+        order_item['Price'] = f"{ order_item['Price'][0:len(str(price_dashes))] }"
+
+    if len(str(order_item['Quantity'])) > len(str(quantity_dashes)):
+        order_item['Quantity'] = f"{ order_item['Quantity'][0:len(str(quantity_dashes))] }"
+
+    item_name_print = f"{item_name + ('-'* (len(str(item_name_dashes))-len(item_name)) )}"
+    #subtracting the 1 extra here for the $
+    item_price_print = f"${str(float(order_item['Price'])) + ('-'* (len(str(price_dashes))-len(item_price) -1) )}"
+    item_quantity_print = f"{str(order_item['Quantity']) + ('-'* (len(str(quantity_dashes))-len(str(order_item['Quantity']))) )}"
+    
+    item_by_quantity_print = f"${cost_per_item[order_index]}"
 
     # 10. Print the item name, price, and quantity
+    print( item_name_print + '|' + item_price_print + '|' + item_quantity_print + '|' + item_by_quantity_print )
+    order_index = order_index + 1
 
 
 # 11. Calculate the cost of the order using list comprehension
 # Multiply the price by quantity for each item in the order list, then sum()
 # and print the prices.
+total_cost = 0
+[total_cost := total_cost + (item['Price'] * item['Quantity']) for item in customer_order]
+
+print( item_name_dashes + price_dashes + quantity_dashes + ('-'*10) )
+print(f'Total: ${total_cost:}')
